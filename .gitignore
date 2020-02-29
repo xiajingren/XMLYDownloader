@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/packages
+/XHZNL.XMLYDownloader.UI/bin/Debug
+/XHZNL.XMLYDownloader.UI/obj
