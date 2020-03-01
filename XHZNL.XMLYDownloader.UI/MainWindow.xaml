@@ -8,6 +8,7 @@
         xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         DataContext="{Binding Path=Main, Source={StaticResource Locator}}"
         Title="{Binding WindowTitle}" Height="500" Width="600" MinHeight="500" MinWidth="600">
     <Window.Resources>
