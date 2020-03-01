@@ -30,10 +30,10 @@ namespace XHZNL.XMLYDownloader.UI.Common
                 }
 
                 var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                downloadFolder = Path.Combine(path, AppName + "\\");
-                if (!Directory.Exists(path))
+                downloadFolder = Path.Combine(path, AppName);
+                if (!Directory.Exists(downloadFolder))
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(downloadFolder);
                 }
                 return downloadFolder;
             }
@@ -69,6 +69,17 @@ namespace XHZNL.XMLYDownloader.UI.Common
             {
                 AssemblyTitleAttribute asmtitle = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetEntryAssembly(), typeof(AssemblyTitleAttribute));
                 return asmtitle.Title;
+            }
+        }
+
+        /// <summary>
+        /// 版本号
+        /// </summary>
+        public static string Version
+        {
+            get
+            {
+                return "v" + Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
         }
 

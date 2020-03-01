@@ -9,7 +9,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         DataContext="{Binding Path=Main, Source={StaticResource Locator}}"
-        Title="ximalaya下载器 by xhznl" Height="500" Width="600" MinHeight="500" MinWidth="600">
+        Title="{Binding WindowTitle}" Height="500" Width="600" MinHeight="500" MinWidth="600">
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -30,7 +30,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{DynamicResource MaterialDesignToolButton}">
+                    <Button Style="{DynamicResource MaterialDesignToolButton}" Grid.Column="0" ToolTip="搜索" Command="{Binding SearchCommand}">
                         <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
                     </Button>
                     <TextBox Grid.Column="1" Margin="8 0 0 0"
@@ -56,9 +56,15 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="示例1：https://www.ximalaya.com/guangbojv/30816438/" />
+                                <TextBlock Text="示例2：https://www.ximalaya.com/guangbojv/30816438/233084088" />
+                            </StackPanel>
+                        </TextBox.ToolTip>
                     </TextBox>
-                    <Button Style="{DynamicResource MaterialDesignToolButton}" Grid.Column="2">
-                        <materialDesign:PackIcon Kind="Microphone" Opacity=".56" Margin="8 0 0 0" />
+                    <Button Style="{DynamicResource MaterialDesignToolButton}" Grid.Column="2" ToolTip="在浏览器打开" Command="{Binding OpenBrowserCommand}">
+                        <materialDesign:PackIcon Kind="Web" Opacity=".56" Margin="8 0 0 0" />
                     </Button>
                 </Grid>
             </materialDesign:ColorZone>
@@ -110,7 +116,7 @@
                                         Style="{StaticResource MaterialDesignIconButton}"
                                         ToolTip="播放"
                                         Visibility="{Binding FileExist, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Command="{Binding DataContext.DownloadCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}"
+                                        Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}"
                                         CommandParameter="{Binding }">
                                         <materialDesign:PackIcon Kind="Play" />
                                     </Button>
@@ -119,7 +125,7 @@
                                         Style="{StaticResource MaterialDesignIconButton}"
                                         ToolTip="在文件夹中打开"
                                         Visibility="{Binding FileExist, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Command="{Binding DataContext.DownloadCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}"
+                                        Command="{Binding DataContext.OpenFileFolderCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}"
                                         CommandParameter="{Binding }">
                                         <materialDesign:PackIcon Kind="Folder" />
                                     </Button>
@@ -158,15 +164,20 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
                 <materialDesign:Chip
-                    ToolTip="下载目录"
+                    ToolTip="下载位置"
                     Content="{Binding DownloadFolder}" 
                     IconBackground="{DynamicResource PrimaryHueDarkBrush}"
                     IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <mvvm:EventToCommand Command="{Binding OpenFolderCommand}"/>
+                            <mvvm:EventToCommand Command="{Binding SetDownloadFolderCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <materialDesign:Chip.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="在文件夹中打开" Command="{Binding OpenDownloadFolderCommand}"/>
+                        </ContextMenu>
+                    </materialDesign:Chip.ContextMenu>
                     <materialDesign:Chip.Icon>
                         <materialDesign:PackIcon Kind="Folder"></materialDesign:PackIcon>
                     </materialDesign:Chip.Icon>
@@ -176,15 +187,15 @@
                        HorizontalAlignment="Center" 
                        TextTrimming="CharacterEllipsis" 
                        Margin="10 0 10 0"
-                       Grid.Column="1">*该软件仅供学习交流使用。</TextBlock>
+                       Grid.Column="1">*该软件仅供学习交流使用。项目地址：https://github.com/xiajingren/XMLYDownloader</TextBlock>
             <StackPanel Orientation="Horizontal" Grid.Column="2">
-                <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" ToolTip="作者邮箱：xhznl@foxmail.com">
+                <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" ToolTip="作者邮箱：xhznl@foxmail.com" Command="{Binding BrowseEmailCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Email" />
                         <TextBlock Margin="8 0 0 0" VerticalAlignment="Center">Email</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" ToolTip="访问GitHub">
+                <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" ToolTip="访问GitHub" Command="{Binding BrowseGitHubCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="GithubCircle" />
                         <TextBlock Margin="8 0 0 0" VerticalAlignment="Center">GitHub</TextBlock>

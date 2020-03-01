@@ -1,5 +1,5 @@
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -30,6 +30,14 @@ namespace XHZNL.XMLYDownloader.UI.ViewModel
         private MainService mainService;
 
         #region 属性
+
+        public string WindowTitle
+        {
+            get
+            {
+                return AppConfig.AppName + AppConfig.Version + "--by xhznl";
+            }
+        }
 
         private string xmlyResourceUrl;
 
@@ -135,6 +143,38 @@ namespace XHZNL.XMLYDownloader.UI.ViewModel
             XMLYResourceModels = result.Item1;
             XMLYResourcePageModels = result.Item2;
             XMLYResourceCount = result.Item3;
+        }
+
+        private RelayCommand openBrowserCommand;
+
+        /// <summary>
+        /// 在浏览器打开命令
+        /// </summary>
+        public RelayCommand OpenBrowserCommand
+        {
+            get
+            {
+                if (openBrowserCommand == null)
+                {
+                    openBrowserCommand = new RelayCommand(OpenBrowser, () =>
+                    {
+                        if (string.IsNullOrWhiteSpace(XMLYResourceUrl))
+                            return false;
+
+                        return true;
+                    });
+                }
+                return openBrowserCommand;
+            }
+            set { openBrowserCommand = value; }
+        }
+
+        /// <summary>
+        /// 在浏览器打开
+        /// </summary>
+        private void OpenBrowser()
+        {
+            CommonHelper.Instance.ProcessStart(XMLYResourceUrl);
         }
 
         private RelayCommand<XMLYResourceModel> downloadCommand;
@@ -253,40 +293,172 @@ namespace XHZNL.XMLYDownloader.UI.ViewModel
             XMLYResourceCount = result.Item3;
         }
 
-        private RelayCommand openFolderCommand;
+        private RelayCommand openDownloadFolderCommand;
 
         /// <summary>
-        /// 设置下载目录命令
+        /// 打开下载目录命令
         /// </summary>
-        public RelayCommand OpenFolderCommand
+        public RelayCommand OpenDownloadFolderCommand
         {
             get
             {
-                if (openFolderCommand == null)
+                if (openDownloadFolderCommand == null)
                 {
-                    openFolderCommand = new RelayCommand(OpenFolder, () =>
+                    openDownloadFolderCommand = new RelayCommand(OpenDownloadFolder, () =>
                     {
                         return true;
                     });
                 }
-                return openFolderCommand;
+                return openDownloadFolderCommand;
             }
-            set { openFolderCommand = value; }
+            set { openDownloadFolderCommand = value; }
+        }
+
+        /// <summary>
+        /// 打开下载目录
+        /// </summary>
+        public void OpenDownloadFolder()
+        {
+            CommonHelper.Instance.PositionFile(DownloadFolder + "\\");
+        }
+
+        private RelayCommand setDownloadFolderCommand;
+
+        /// <summary>
+        /// 设置下载目录命令
+        /// </summary>
+        public RelayCommand SetDownloadFolderCommand
+        {
+            get
+            {
+                if (setDownloadFolderCommand == null)
+                {
+                    setDownloadFolderCommand = new RelayCommand(SetDownloadFolder, () =>
+                    {
+                        return true;
+                    });
+                }
+                return setDownloadFolderCommand;
+            }
+            set { setDownloadFolderCommand = value; }
         }
 
         /// <summary>
         /// 设置下载目录
         /// </summary>
-        public void OpenFolder()
+        public void SetDownloadFolder()
         {
-            var dialog = new CommonOpenFileDialog("下载目录");
-            dialog.DefaultDirectory = DownloadFolder;
+            var dialog = new CommonOpenFileDialog("下载位置");
             dialog.IsFolderPicker = true;
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
                 DownloadFolder = dialog.FileName;
             }
+        }
+
+        private RelayCommand<XMLYResourceModel> openFileFolderCommand;
+
+        /// <summary>
+        /// 打开文件目录命令
+        /// </summary>
+        public RelayCommand<XMLYResourceModel> OpenFileFolderCommand
+        {
+            get
+            {
+                if (openFileFolderCommand == null)
+                {
+                    openFileFolderCommand = new RelayCommand<XMLYResourceModel>(OpenFileFolder, (XMLYResourceModel p) => { return true; });
+                }
+                return openFileFolderCommand;
+            }
+            set { openFileFolderCommand = value; }
+        }
+
+        /// <summary>
+        /// 打开文件目录
+        /// </summary>
+        public void OpenFileFolder(XMLYResourceModel obj)
+        {
+            CommonHelper.Instance.PositionFile(DownloadFolder + "\\" + obj.FileName);
+        }
+
+        private RelayCommand<XMLYResourceModel> openFileCommand;
+
+        /// <summary>
+        /// 打开文件命令
+        /// </summary>
+        public RelayCommand<XMLYResourceModel> OpenFileCommand
+        {
+            get
+            {
+                if (openFileCommand == null)
+                {
+                    openFileCommand = new RelayCommand<XMLYResourceModel>(OpenFile, (XMLYResourceModel p) => { return true; });
+                }
+                return openFileCommand;
+            }
+            set { openFileCommand = value; }
+        }
+
+        /// <summary>
+        /// 打开文件
+        /// </summary>
+        public void OpenFile(XMLYResourceModel obj)
+        {
+            CommonHelper.Instance.ProcessStart(DownloadFolder + "\\" + obj.FileName);
+        }
+
+        private RelayCommand browseGitHubCommand;
+
+        /// <summary>
+        /// 访问github命令
+        /// </summary>
+        public RelayCommand BrowseGitHubCommand
+        {
+            get
+            {
+                if (browseGitHubCommand == null)
+                {
+                    browseGitHubCommand = new RelayCommand(BrowseGitHub, () => { return true; });
+                }
+                return browseGitHubCommand;
+            }
+            set { browseGitHubCommand = value; }
+        }
+
+        /// <summary>
+        /// 访问github
+        /// </summary>
+        public void BrowseGitHub()
+        {
+            CommonHelper.Instance.ProcessStart("https://github.com/xiajingren/XMLYDownloader");
+        }
+
+        private RelayCommand browseEmailCommand;
+
+        /// <summary>
+        /// 访问email命令
+        /// </summary>
+        public RelayCommand BrowseEmailCommand
+        {
+            get
+            {
+                if (browseEmailCommand == null)
+                {
+                    browseEmailCommand = new RelayCommand(BrowseEamil, () => { return true; });
+                }
+                return browseEmailCommand;
+            }
+            set { browseEmailCommand = value; }
+        }
+
+        /// <summary>
+        /// 访问email
+        /// </summary>
+        public void BrowseEamil()
+        {
+            CommonHelper.Instance.ProcessStart("mailto://xhznl@foxmail.com");
         }
 
         #endregion

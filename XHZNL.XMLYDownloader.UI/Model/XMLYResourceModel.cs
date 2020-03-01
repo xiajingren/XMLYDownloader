@@ -46,7 +46,7 @@ namespace XHZNL.XMLYDownloader.UI.Model
         {
             get
             {
-                showDownloadButton = !FileExist;
+                //showDownloadButton = !FileExist;
                 return showDownloadButton;
             }
             set { showDownloadButton = value; RaisePropertyChanged(() => ShowDownloadButton); }
@@ -100,6 +100,7 @@ namespace XHZNL.XMLYDownloader.UI.Model
             get
             {
                 fileExist = File.Exists(AppConfig.DownloadFolder + "\\" + FileName);
+                ShowDownloadButton = !fileExist;
                 return fileExist;
             }
             set { fileExist = value; RaisePropertyChanged(() => FileExist); }

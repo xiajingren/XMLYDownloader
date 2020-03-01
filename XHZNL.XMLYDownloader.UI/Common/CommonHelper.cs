@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -79,6 +81,45 @@ namespace XHZNL.XMLYDownloader.UI.Common
         }
 
         #endregion
+
+        /// <summary>
+        /// 定位文件或目录位置
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        public bool PositionFile(string fileFullName)
+        {
+            try
+            {
+                if (!File.Exists(fileFullName) && !Directory.Exists(fileFullName))
+                    return false;
+
+                ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe"); ;
+                psi.Arguments = " /select," + fileFullName;
+                Process.Start(psi);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 打开进程
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        public bool ProcessStart(string fileFullName)
+        {
+            try
+            {
+                Process.Start(fileFullName);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }
