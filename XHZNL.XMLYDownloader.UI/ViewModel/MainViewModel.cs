@@ -319,7 +319,7 @@ namespace XHZNL.XMLYDownloader.UI.ViewModel
         /// </summary>
         public void OpenDownloadFolder()
         {
-            CommonHelper.Instance.PositionFile(DownloadFolder + "\\");
+            CommonHelper.Instance.ProcessStart(DownloadFolder + "\\");
         }
 
         private RelayCommand setDownloadFolderCommand;
